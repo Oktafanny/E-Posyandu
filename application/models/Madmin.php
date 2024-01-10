@@ -10,6 +10,11 @@ class Madmin extends CI_Model
         $q = $this->db->get_where('tbl_admin', array('userName' => $u, 'password' => $p));
         return $q->row();
     }
+    public function cek_pertumbuhan($u)
+    {
+        $q = $this->db->get_where('pertumbuhan', array('id_pertumbuhan' => $u));
+        return $q->row();
+    }
 
     public function get_all_data($tabel)
     {
@@ -89,6 +94,21 @@ class Madmin extends CI_Model
 
         return $this->db->get()->result();
     }
+
+    public function getPertumbuhan($tabel, $id)
+    {
+        $this->db->select('pertumbuhan.id_pertumbuhan, anak.nama, imunisasi.imunisasi, penimbangan.berat_badan, penimbangan.tinggi_badan, pertumbuhan.tgl_periksa, pertumbuhan.keterangan');
+        $this->db->from($tabel);
+        $this->db->join('anak', 'anak.id_anak = pertumbuhan.id_anak', 'left');
+        $this->db->join('imunisasi', 'imunisasi.id_anak = pertumbuhan.id_anak', 'left');
+        $this->db->join('penimbangan', 'penimbangan.id_anak = pertumbuhan.id_anak', 'left');
+        $this->db->where($id);
+
+        return $this->db->get()->row_object();
+        // return $this->db->get_where($tabel, $id)->row_object();
+        // return $this->db->get_where($tabel, $id);
+    }
+
     public function get_children_with_penimbangan_imunisasi()
     {
         $this->db->select('*');
